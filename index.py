@@ -21,12 +21,12 @@ lingo = duolingo.Duolingo(usernameDuolingo, passwordDuolingo, session_file="toke
 bot = commands.Bot(command_prefix='duol ')
 
 cooldownRanking = 0
-timeDailyRanking = 20
+timeDailyRanking = 21
 
 
 @bot.event
 async def on_ready():
-    print(dt.datetime.now().hour)
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="your progress"))
     await loadUsersInFile()
     dailyLeaderBoard.start()
 
@@ -103,6 +103,7 @@ async def time(ctx, msg):
         time = int(msg)
         if(time >= 0 and time <= 23):
             timeDailyRanking = time
+            await ctx.send("Le temps a été modifié a %d, temps actuel : %d" %(timeDailyRanking,dt.datetime.now().hour))
         else:
             await ctx.send("Voud devez entrez une heure entre 0 et 23")
     except ValueError:
