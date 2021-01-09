@@ -123,3 +123,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+token.txt
+duolingo.md
+users.txt
+secret.txt
