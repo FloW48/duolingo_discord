@@ -80,6 +80,7 @@ async def ranking(ctx):
     global cooldownRanking
     global lingo
     if(cooldownRanking == 0):
+        lingo = duolingo.Duolingo(usernameDuolingo, passwordDuolingo)
         ans = str(lingo.get_friends())
         ans = ans.replace("'", "\"")
         dic = json.loads(ans)
@@ -107,7 +108,7 @@ async def time(ctx, msg):
         time = int(msg)
         if(time >= 0 and time <= 23):
             timeDailyRanking = time
-            await ctx.send("Le temps a été modifié a %d, temps actuel : %d" %(timeDailyRanking,dt.datetime.now().hour+1)%24)
+            await ctx.send("Le temps a été modifié a %d, temps actuel : %d" %(timeDailyRanking,(dt.datetime.now().hour+1)%24))
         else:
             await ctx.send("Voud devez entrez une heure entre 0 et 23")
     except ValueError:
