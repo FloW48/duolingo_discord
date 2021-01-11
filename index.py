@@ -17,15 +17,16 @@ with open('secret.txt', 'r') as file:
     tokenDiscord = data[2]
 
 
-lingo = duolingo.Duolingo(usernameDuolingo, passwordDuolingo, session_file="token.txt")
+lingo = duolingo.Duolingo(usernameDuolingo, passwordDuolingo)
 bot = commands.Bot(command_prefix='duol ')
 
 cooldownRanking = 0
-timeDailyRanking = 21
+timeDailyRanking = 22
 
 
 @bot.event
 async def on_ready():
+    print(dt.datetime.now().hour)
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="your progress"))
     await loadUsersInFile()
     dailyLeaderBoard.start()
@@ -37,13 +38,16 @@ async def loadUsersInFile():
 
 @tasks.loop(hours=24)
 async def dailyLeaderBoard():
+    global lingo
     file = open("users.txt", mode="r")
     users = file.read()
     file.close()
     users = users.replace("'", "\"")
     usersFileDic = json.loads(users)
 
+    lingo = duolingo.Duolingo(usernameDuolingo, passwordDuolingo)
     ans = str(lingo.get_friends())
+    # ans = '[{"username": "FloW48_", "id": 670694569, "points": 7400, "languages": []}, {"username": "lucaasmth", "id": 25231199, "points": 3600, "languages": []}, {"username": "DogMage", "id": 718168090, "points": 405, "languages": []}, {"username": "FloWBotz", "id": 720422604, "points": 100, "languages": []}]'
     ans = ans.replace("'", "\"")
     dic = json.loads(ans)
 
@@ -65,7 +69,7 @@ async def dailyLeaderBoard():
 async def before_dailyLeadeBoard():
     global timeDailyRanking
     for _ in range(60*60*24):  # loop the hole day
-        if dt.datetime.now().hour == timeDailyRanking:  # 24 hour format
+        if (dt.datetime.now().hour+1)%24 == timeDailyRanking:  # 24 hour format
             print('It is time')
             return
         await asyncio.sleep(1)# wait a second before looping again. You can make it more
@@ -103,7 +107,7 @@ async def time(ctx, msg):
         time = int(msg)
         if(time >= 0 and time <= 23):
             timeDailyRanking = time
-            await ctx.send("Le temps a été modifié a %d, temps actuel : %d" %(timeDailyRanking,dt.datetime.now().hour))
+            await ctx.send("Le temps a été modifié a %d, temps actuel : %d" %(timeDailyRanking,dt.datetime.now().hour+1)%24)
         else:
             await ctx.send("Voud devez entrez une heure entre 0 et 23")
     except ValueError:
