@@ -47,16 +47,23 @@ async def dailyLeaderBoard():
 
     lingo = duolingo.Duolingo(usernameDuolingo, passwordDuolingo)
     ans = str(lingo.get_friends())
-    # ans = '[{"username": "FloW48_", "id": 670694569, "points": 7400, "languages": []}, {"username": "lucaasmth", "id": 25231199, "points": 3600, "languages": []}, {"username": "DogMage", "id": 718168090, "points": 405, "languages": []}, {"username": "FloWBotz", "id": 720422604, "points": 100, "languages": []}]'
+    # ans = '[{"username": "FloW48_", "id": 670694569, "points": 7600, "languages": []}, {"username": "lucaasmth", "id": 25231199, "points": 3600, "languages": []}, {"username": "DogMage", "id": 718168090, "points": 410, "languages": []}, {"username": "FloWBotz", "id": 720422604, "points": 100, "languages": []}]'
     ans = ans.replace("'", "\"")
     dic = json.loads(ans)
+
+    for i in range(0, len(usersFileDic)):
+        if(usersFileDic[i]["username"] == dic[i]["username"] and usersFileDic[i]["username"] != "FloWBotz"):
+            dic[i]["points"] = dic[i]["points"] - usersFileDic[i]["points"]
+
+    dic = sorted(dic, key=lambda item: item.get("points"))
+    dic.reverse()   
 
     embed = discord.Embed()
     embed.set_author(name="FloW")
     embed.title = "Daily Ranking duolingo"
-    for i in range(0, len(usersFileDic)):
+    for i in range(0, len(dic)):
         if dic[i]["username"] != "FloWBotz":
-            embed.add_field(name=str(i+1)+" - "+dic[i]["username"], value=">>> "+str(dic[i]["points"] - usersFileDic[i]["points"])+" xp", inline=False)
+            embed.add_field(name=str(i+1)+" - "+dic[i]["username"], value=">>> "+str(dic[i]["points"])+" xp", inline=False)
     channel = await bot.fetch_channel('797563311045869628')
     await channel.send(embed=embed)
     ans.replace("\"", "'")
@@ -84,6 +91,8 @@ async def ranking(ctx):
         ans = str(lingo.get_friends())
         ans = ans.replace("'", "\"")
         dic = json.loads(ans)
+        dic = sorted(dic, key=lambda item: item.get("points"))
+        dic.reverse()   
         embed = discord.Embed()
         embed.set_author(name="FloW")
         embed.title = "Ranking duolingo"
