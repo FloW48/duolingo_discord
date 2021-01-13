@@ -61,9 +61,11 @@ async def dailyLeaderBoard():
     embed = discord.Embed()
     embed.set_author(name="FloW")
     embed.title = "Daily Ranking duolingo"
-    for i in range(0, len(dic)):
-        if dic[i]["username"] != "FloWBotz":
-            embed.add_field(name=str(i+1)+" - "+dic[i]["username"], value=">>> "+str(dic[i]["points"])+" xp", inline=False)
+    i = 0
+    for user in dic:
+        if user["username"] != "FloWBotz":
+            i += 1
+            embed.add_field(name=str(i)+" - "+user["username"], value=">>> "+str(user["points"])+" xp", inline=False)
     channel = await bot.fetch_channel('797563311045869628')
     await channel.send(embed=embed)
     ans.replace("\"", "'")
@@ -98,8 +100,8 @@ async def ranking(ctx):
         embed.title = "Ranking duolingo"
         i = 0
         for user in dic:
-            i += 1
             if user["username"] != "FloWBotz":
+                i += 1
                 embed.add_field(name=str(i)+" - "+user["username"], value=">>> "+str(user["points"])+" xp", inline=False)
         await ctx.send(embed=embed)
         cooldownRanking = 3600
